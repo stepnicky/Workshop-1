@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class TaskManager {
     public static void main(String[] args) {
+        displayOptions();
         try {
             listOfTasks();
         } catch (FileNotFoundException e) {
@@ -34,5 +35,13 @@ public class TaskManager {
             System.err.println("Error while reading file: " + e.getMessage());
         }
         return listOfTasks;
+    }
+    public static void displayOptions() {
+        System.out.println(ConsoleColors.BLUE + "Please select an option:");
+        String[] options = {"add", "remove", "list", "exit"};
+        System.out.print(ConsoleColors.RESET);
+        for(String option : options) {
+            System.out.println(option);
+        }
     }
 }
