@@ -1,6 +1,7 @@
 package pl.coderslab;
 
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileNotFoundException;
@@ -38,9 +39,8 @@ public class TaskManager {
         for(String option : options) {
             System.out.println(option);
         }
-
     }
-    public static String[][] selectOption(String[][] tasks) {
+    public static void selectOption(String[][] tasks) {
         displayOptions();
         Scanner scanner = new Scanner(System.in);
         String input = scanner.next();
@@ -49,18 +49,17 @@ public class TaskManager {
                 addTask(tasks, input);
                 break;
             case "remove":
-//                removeTask();
+                removeTask(tasks, input);
                 break;
             case "list":
                 displayTasks(tasks, input);
                 break;
             case "exit":
-//                exitApp();
+//                exitApp(tasks, input);
                 break;
             default:
                 System.err.println("Please select a correct option");
         }
-        return tasks;
     }
     public static void displayTasks(String[][] tasks, String input) {
         StringBuilder builder = new StringBuilder();
@@ -85,7 +84,29 @@ public class TaskManager {
         String[] newTask = {description, date, importance};
         tasks = Arrays.copyOf(tasks, tasks.length + 1);
         tasks[tasks.length - 1] = newTask;
-        System.out.println("Task has been successfully added!");
+        System.out.println("Task was successfully added");
         selectOption(tasks);
     }
+    public static void removeTask(String[][] tasks, String input) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n" + input + "\n");
+
+        int indexOfTask;
+        do {
+            System.out.println("Please select number to remove");
+            while(!scanner.hasNextInt()) {
+                System.err.println("Please enter correct value");
+                scanner.next();
+            }
+            indexOfTask = scanner.nextInt();
+            if(indexOfTask < 0) {
+                System.err.println("Please enter non-negative number");
+            }
+        } while (indexOfTask < 0);
+
+        tasks = ArrayUtils.remove(tasks, indexOfTask);
+        System.out.println("Value was successfully deleted");
+        selectOption(tasks);
+    }
+
 }
