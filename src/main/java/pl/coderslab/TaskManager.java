@@ -1,6 +1,8 @@
 package pl.coderslab;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,17 +14,9 @@ import java.util.Scanner;
 public class TaskManager {
     public static void main(String[] args) {
         displayOptions();
-        try {
-            listOfTasks();
-        } catch (FileNotFoundException e) {
-            System.err.println("Error while loading list of tasks from the file");
-        }
     }
-    public static String[][] listOfTasks() throws FileNotFoundException {
+    public static String[][] listOfTasks() {
         Path tasks = Paths.get("tasks.csv");
-        if(!Files.exists(tasks)) {
-            throw new FileNotFoundException("File " + tasks + " is missing");
-        }
         String[][] listOfTasks = new String[0][];
         String line;
         try (Scanner scanner = new Scanner(tasks)) {
@@ -43,5 +37,37 @@ public class TaskManager {
         for(String option : options) {
             System.out.println(option);
         }
+        selectOption(options);
+    }
+    public static void selectOption(String[] options) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.next();
+        switch (input) {
+            case "add":
+//                addTask();
+                break;
+            case "remove":
+//                removeTask();
+                break;
+            case "list":
+                displayTasks(input);
+                break;
+            case "exit":
+//                exitApp();
+                break;
+            default:
+                System.err.println("Please select a correct option");
+        }
+    }
+    public static void displayTasks(String input) {
+        String[][] tasks = listOfTasks();
+        StringBuilder builder = new StringBuilder();
+        builder.append(input).append("\n");
+        int counter = 0;
+        for(String[] task : tasks) {
+            builder.append(counter).append(" : ").append(StringUtils.join(task)).append("\n");
+        }
+        System.out.println(builder.toString());
+        displayOptions();
     }
 }
