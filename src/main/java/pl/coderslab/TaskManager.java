@@ -13,7 +13,8 @@ import java.util.Scanner;
 
 public class TaskManager {
     public static void main(String[] args) {
-        displayOptions();
+        String[][] tasks = listOfTasks();
+        selectOption(tasks);
     }
     public static String[][] listOfTasks() {
         Path tasks = Paths.get("tasks.csv");
@@ -37,20 +38,21 @@ public class TaskManager {
         for(String option : options) {
             System.out.println(option);
         }
-        selectOption(options);
+
     }
-    public static void selectOption(String[] options) {
+    public static String[][] selectOption(String[][] tasks) {
+        displayOptions();
         Scanner scanner = new Scanner(System.in);
         String input = scanner.next();
         switch (input) {
             case "add":
-//                addTask();
+                addTask(tasks, input);
                 break;
             case "remove":
 //                removeTask();
                 break;
             case "list":
-                displayTasks(input);
+                displayTasks(tasks, input);
                 break;
             case "exit":
 //                exitApp();
@@ -58,16 +60,32 @@ public class TaskManager {
             default:
                 System.err.println("Please select a correct option");
         }
+        return tasks;
     }
-    public static void displayTasks(String input) {
-        String[][] tasks = listOfTasks();
+    public static void displayTasks(String[][] tasks, String input) {
         StringBuilder builder = new StringBuilder();
-        builder.append(input).append("\n");
+        builder.append("\n").append(input).append("\n");
         int counter = 0;
         for(String[] task : tasks) {
             builder.append(counter).append(" : ").append(StringUtils.join(task)).append("\n");
+            counter++;
         }
         System.out.println(builder.toString());
-        displayOptions();
+        selectOption(tasks);
+    }
+    public static void addTask(String[][] tasks, String input) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n" + input + "\n");
+        System.out.println("Please add task description");
+        String description = " " + scanner.nextLine();
+        System.out.println("Please add task due date");
+        String date = " " + scanner.nextLine();
+        System.out.println("Is your task important: true/false");
+        String importance = " " + scanner.nextLine();
+        String[] newTask = {description, date, importance};
+        tasks = Arrays.copyOf(tasks, tasks.length + 1);
+        tasks[tasks.length - 1] = newTask;
+        System.out.println("Task has been successfully added!");
+        selectOption(tasks);
     }
 }
