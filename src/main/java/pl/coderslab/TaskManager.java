@@ -4,6 +4,7 @@ package pl.coderslab;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,11 +15,19 @@ import java.util.Scanner;
 
 public class TaskManager {
     public static void main(String[] args) {
-        String[][] tasks = listOfTasks();
-        selectOption(tasks);
+        try {
+            String[][] tasks = listOfTasks();
+            selectOption(tasks);
+        } catch (FileNotFoundException e) {
+            System.err.println("Error while reading file: " + e.getMessage());
+        }
+
     }
-    public static String[][] listOfTasks() {
+    public static String[][] listOfTasks() throws FileNotFoundException {
         Path tasks = Paths.get("tasks.csv");
+        if (!Files.exists(tasks)) {
+            throw new FileNotFoundException("File " + tasks + " is missing");
+        }
         String[][] listOfTasks = new String[0][];
         String line;
         try (Scanner scanner = new Scanner(tasks)) {
@@ -55,7 +64,7 @@ public class TaskManager {
                 displayTasks(tasks, input);
                 break;
             case "exit":
-//                exitApp(tasks, input);
+                exitApp(tasks, input);
                 break;
             default:
                 System.err.println("Please select a correct option");
@@ -76,7 +85,7 @@ public class TaskManager {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n" + input + "\n");
         System.out.println("Please add task description");
-        String description = " " + scanner.nextLine();
+        String description = scanner.nextLine();
         System.out.println("Please add task due date");
         String date = " " + scanner.nextLine();
         System.out.println("Is your task important: true/false");
@@ -108,5 +117,18 @@ public class TaskManager {
         System.out.println("Value was successfully deleted");
         selectOption(tasks);
     }
-
+    public static void exitApp(String[][] tasks, String input) {
+        System.out.println("\n" + input + "\n");
+        StringBuilder newTasks = new StringBuilder();
+        Path path = Paths.get("tasks.csv");
+        for (String[] task : tasks) {
+            newTasks.append(task[0]).append(",").append(task[1]).append(",").append(task[2]).append("\n");
+        }
+        try {
+            Files.writeString(path, newTasks.toString());
+        } catch (IOException e) {
+            System.err.println("Error while writing to file");
+        }
+        System.out.println("Bye, bye.");
+    }
 }
